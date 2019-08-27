@@ -6,9 +6,10 @@ class Item {
          expensesItems:[],
          totalIncome:0,
          remainingToBudget:0,
-         difference:0,
+         difference: this.totalIncome - this.remainingToBudget,
          spent:0,
-         balance:0
+         balance:0,
+         state:'income'
       };
    };
 
@@ -27,7 +28,10 @@ class Item {
    getData() {
       return this.data;
    }
-
+   
+   getState() {
+      return this.data.state;
+   }
    addIncomeItem(name, amount) {
       let ID;
       // create ID
@@ -44,6 +48,7 @@ class Item {
 
       this.data.totalIncome += amount;
       this.data.balance += amount;
+      this.data.remainingToBudget += amount;
       return newIncomeItem;
 
 
