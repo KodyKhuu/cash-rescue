@@ -9,9 +9,17 @@ class Item {
          difference: this.totalIncome - this.remainingToBudget,
          spent:0,
          balance:0,
-         state:'income'
+         state:'income',
+         expensesChoices:[]
       };
    };
+
+   createSelectItem(id, html){
+      return{
+         id,
+         html
+      }
+   }
 
    createIncomeItem(name, amount, id){
       const item = {
@@ -60,7 +68,7 @@ class Item {
       } else {
          ID = 0
       }
-      amount = parseInt(amount);
+      amount = parseFloat(amount);
       
       const newIncomeItem = this.createIncomeItem(name,amount,ID);
 
@@ -75,12 +83,12 @@ class Item {
    addAllowancesItem(name, spent, amount) {
       let ID;
       // create ID
-      if(this.data.incomeItems.length > 0){
-         ID = this.data.incomeItems[this.data.incomeItems.length - 1].id + 1
+      if(this.data.allowancesItems.length > 0){
+         ID = this.data.allowancesItems[this.data.allowancesItems.length - 1].id + 1
       } else {
          ID = 0
       }
-      amount = parseInt(amount);
+      amount = parseFloat(amount);
       const newAllowancesItem = this.createAllowancesItem(name,amount,spent,ID);
       this.data.allowancesItems.push(newAllowancesItem);
       this.data.remainingToBudget -= amount;
@@ -90,12 +98,12 @@ class Item {
    addExpensesItem(name, amount, desc, date) {
       let ID;
       // create ID
-      if(this.data.incomeItems.length > 0){
-         ID = this.data.incomeItems[this.data.incomeItems.length - 1].id + 1
+      if(this.data.expensesItems.length > 0){
+         ID = this.data.expensesItems[this.data.expensesItems.length - 1].id + 1
       } else {
          ID = 0
       }
-      amount = parseInt(amount);
+      amount = parseFloat(amount);
       const newExpensesItem = this.createExpensesItem(name, amount, desc, date, ID);
       this.data.expensesItems.push(newExpensesItem);
       this.data.spent += amount;

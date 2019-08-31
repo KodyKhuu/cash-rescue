@@ -6,6 +6,7 @@ class UI {
       this.spent = document.querySelector('.spent');
       this.balance = document.querySelector('.balance');
       this.incomeNameInput = document.querySelector('#name-input');
+      this.nameFormGroup = document.querySelector('.name-input');
       this.incomeAmountInput = document.querySelector('#amount-input');
       this.expensesDescriptionInput = document.querySelector('#description-input');
       this.expensesDateInput = document.querySelector('#date-input');
@@ -21,6 +22,16 @@ class UI {
       this.listTitle = document.querySelector('.list-title');
       this.editTitle = document.querySelector('.edit-title');
       this.amountLabel = document.querySelector('.amount-label');
+      this.selectHtml = ``;
+      this.selectFormGroup = document.querySelector('.select-input');
+      this.selectInput = document.querySelector('#select-input');
+   }
+
+   updateSelectHtml(list){
+      this.selectHtml = ``;
+      for (let i = 0; i < list.length; i++){
+         this.selectHtml += list[i].html
+      }
    }
 
    changeState(state){
@@ -37,6 +48,8 @@ class UI {
             ui.expensesList.style.display = 'none';
          }
          ui.clearFields();
+         ui.selectFormGroup.style.display = 'none'
+         ui.nameFormGroup.style.display = 'block'
          ui.incomeList.style.display = 'block';
          ui.descriptionFormGroup.style.display = 'none';
          ui.amountLabel.textContent = 'Amount';
@@ -53,7 +66,12 @@ class UI {
          } else if (ui.expensesBtn.getAttributeNames().includes('disabled')) {
             ui.expensesBtn.removeAttribute('disabled');
             ui.allowancesBtn.setAttribute('disabled', '');
+
+            ui.expensesList.style.display = 'none'
          }
+         ui.clearFields();
+         ui.selectFormGroup.style.display = 'none'
+         ui.nameFormGroup.style.display = 'block'
          ui.allowancesList.style.display = 'block';
          ui.amountLabel.textContent = 'Amount Planning to Spend';
          ui.descriptionFormGroup.style.display = 'none';
@@ -65,10 +83,21 @@ class UI {
          if (ui.incomeBtn.getAttributeNames().includes('disabled')){
             ui.incomeBtn.removeAttribute('disabled');
             ui.expensesBtn.setAttribute('disabled', '');
+
+            ui.incomeList.style.display = 'none'
          } else if (ui.allowancesBtn.getAttributeNames().includes('disabled')) {
             ui.allowancesBtn.removeAttribute('disabled');
             ui.expensesBtn.setAttribute('disabled', '');
+
+            ui.allowancesList.style.display = 'none'
          }
+         // <label for="name-input" class="name-label text-muted">Name</label>
+         // <select id="name-input" class="form-control">
+         // ${ui.selectHtml}
+         // </select>
+         ui.selectFormGroup.style.display = 'block'
+         ui.nameFormGroup.style.display = 'none'
+         ui.clearFields();
          ui.expensesList.style.display = 'block'
          ui.amountLabel.textContent = 'Amount Spent';
          ui.descriptionFormGroup.style.display = 'block';
@@ -103,8 +132,6 @@ class UI {
    }
 
    allowancesListAdd(name, amount, id, item){
-
-
       // create list item
       const li = document.createElement('li');
       li.className = 'list-group-item';
@@ -114,7 +141,6 @@ class UI {
          <a href="#" class="secondary-content">
             <i class="edit-item fa fa-pencil"></i>
          </a>`;
-      console.log(li);
       this.allowancesList.insertAdjacentElement('beforeend', li)
 
       // update total income, etc.

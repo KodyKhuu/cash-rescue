@@ -87,13 +87,20 @@
          <h4 class="edit-title card-title pb-2">Edit Income</h4>
             <form>
                <div class="row">
-                  <div class="form-group col-7">
-                     <label for="name-input" class="name-label text-muted">Name</label>
-                     <input type="text" id="name-input" class="form-control">
+                  <div class="name form-group col-7">
+                     <div class="name-input">
+                        <label for="name-input" class="name-label text-muted">Name</label>
+                        <input type="text" id="name-input" class="form-control">      
+                     </div>
+                     <div class="select-input">
+                        <label for="select-input" class="name-label text-muted">Name</label>
+                        <select id="select-input" class="form-control">
+                        </select>
+                     </div>
                   </div>
                   <div class="form-group col-5">
                      <label for="amount-input" class="amount-label text-muted">Amount</label>
-                     <input type="text" id="amount-input" class="form-control">
+                     <input type="number" step="0.01" id="amount-input" class="form-control">
                   </div>
                </div>
                <div class="row">
