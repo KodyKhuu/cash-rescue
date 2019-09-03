@@ -115,6 +115,9 @@
                </div>
                <div class="row">
                   <button type="button" class=" add-btn btn btn-outline-primary mx-auto"><i class="fa fa-plus"></i> Add</button>
+                  <button type="button" class=" edit-btn btn btn-outline-primary"><i class="fa fa-pencil-square-o"></i> Edit</button>
+                  <button type="button" class=" delete-btn btn btn-outline-primary"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                  <button type="button" class=" back-btn btn btn-outline-primary"><i class=" 	fa fa-angle-double-left"></i> Back</button>
                </div>
             </form>
          </div>
@@ -123,11 +126,43 @@
    
    <div class="container">
       <h5 class="list-title mt-3">Sources of Income</h5>
+      <table class="income-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+            </tr>
+         </thead>
+         <tbody class="table-body income-list">
+         </tbody>
+      </table>
 
-      <ul class="income-list list-group">
-      </ul>
-      <ul class="allowances-list list-group">
-      </ul>
+      <table class="allowances-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+               <th scope="col">% of Income</th>
+               <th scope="col">Spent</th>
+            </tr>
+         </thead>
+         <tbody class="table-body allowances-list">
+         </tbody>
+      </table>
+
+      <table class="expenses-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+               <th scope="col">Description</th>
+               <th scope="col">Date</th>
+            </tr>
+         </thead>
+         <tbody class="table-body expenses-list">
+         </tbody>
+      </table>
+
       <ul class="expenses-list list-group">
       </ul>
          

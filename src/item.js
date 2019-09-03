@@ -10,7 +10,8 @@ class Item {
          spent:0,
          balance:0,
          state:'income',
-         expensesChoices:[]
+         expensesChoices:[],
+         currentItem: {}
       };
    };
 
@@ -78,6 +79,55 @@ class Item {
       this.data.balance += amount;
       this.data.remainingToBudget += amount;
       return newIncomeItem;
+   }
+
+   setCurrentTableElement(e){
+      let list = this.getData().incomeItems;
+      let element = e.target.parentElement;
+      if (element.parentElement.classList[0] === 'table-body'){
+         let id = element.id.split('-')[1];
+         if (this.getState() === 'income'){
+            for (let i = 0; i < list.length; i++){
+               if (id == list[i].id){
+                  this.getData().currentItem = list[i];
+                  break; 
+               }
+         }
+      }
+   }
+}
+
+
+   deleteIncomeItem(e){
+      let list = this.getData().incomeItems;
+      this.setCurrentTableElement(e, this.getState(), this.getData());
+      for (let i = 0; i < list.length; i++){
+         if (list[i].id == this.getData().currentItem.id){
+            list.splice(i, 1)
+            break
+         }
+      }
+      this.getData().totalIncome -= this.getData().currentItem.amount;
+      this.getData().balance -= this.getData().currentItem.amount;
+      this.getData().remainingToBudget -= this.getData().currentItem.amount;
+
+   }
+
+   updateIncomeItem(name, amount) {
+      let updatedIncomeItem;
+      amount = parseFloat(amount);
+      for (let i = 0; i < this.data.incomeItems.length; i++){
+         if (this.data.incomeItems[i].id == this.data.currentItem.id) {
+            this.data.totalIncome += amount - this.data.currentItem.amount;
+            this.data.balance += amount - this.data.currentItem.amount;
+            this.data.remainingToBudget += amount - this.data.currentItem.amount;  
+            this.data.incomeItems[i].name = name
+            this.data.incomeItems[i].amount = amount
+            updatedIncomeItem = this.data.incomeItems[i];
+            break
+         }
+      }
+      return updatedIncomeItem;
    }
 
    addAllowancesItem(name, spent, amount) {
