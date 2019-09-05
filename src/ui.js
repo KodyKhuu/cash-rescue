@@ -69,16 +69,29 @@ class UI {
    }
 
    changeEditState(e, item){
-      item.setCurrentTableElement(e)
-      this.incomeNameInput.value = item.getData().currentItem.name;
-      this.incomeAmountInput.value = item.getData().currentItem.amount;
-      
-      this.addBtn.style.display = 'none'
-      this.editBtn.style.display = 'block'
-      this.deleteBtn.style.display = 'block'
-      this.backBtn.style.display = 'block'
-      this.editTitle.textContent = 'Edit Income'
+      let element = e.target.parentElement;
+      if (element.parentElement.classList[0] === 'table-body'){
+         let id = element.id.split('-')[1];
+         if (item.getState() === 'income'){
+            item.setCurrentTableElement(id, item.getData().incomeItems)
+            this.editTitle.textContent = 'Edit Income'
+         } else if (item.getState() === 'allowances'){
+            item.setCurrentTableElement(id, item.getData().allowancesItems)
+            this.editTitle.textContent = 'Edit Allowances'
+         } else if (item.getState() === 'expenses'){
+            item.setCurrentTableElement(id, item.getData().expensesItems)
+            this.editTitle.textContent = 'Edit Expenses'
+         }
+         this.incomeNameInput.value = item.getData().currentItem.name;
+         this.incomeAmountInput.value = item.getData().currentItem.amount;
+         this.addBtn.style.display = 'none'
+         this.editBtn.style.display = 'block'
+         this.deleteBtn.style.display = 'block'
+         this.backBtn.style.display = 'block'
+         
+      }
    }
+
 
    
    changeState(state){
@@ -179,20 +192,35 @@ class UI {
       this.remainingBudget.textContent = item.getData().remainingToBudget;
    }
 
-   incomeListUpdate(name, amount, id, item){
-      let incomeItems = Array.from(document.getElementsByClassName('income-element'))
-      for (let i = 0; i < incomeItems.length; i++){
-         if (incomeItems[i].id === `income-${id}`) {
-            incomeItems[i].innerHTML = `<tr>
-            <td>${name}</td>
-            <td>${amount}</td>
-            </tr>`
+   tableUpdate(updatedItem, item){
+      if (item.getState() === 'income') {
+         let incomeItems = Array.from(document.getElementsByClassName('income-element'))
+         for (let i = 0; i < incomeItems.length; i++){
+            if (incomeItems[i].id === `income-${updatedItem.id}`) {
+               incomeItems[i].innerHTML = `<tr>
+               <td>${updatedItem.name}</td>
+               <td>${updatedItem.amount}</td>
+               </tr>`   
+            }
+         }
+         this.totIncome.textContent = item.getData().totalIncome;
+         this.balance.textContent = item.getData().balance;   
+      } else if (item.getState() === 'allowances') {
+         let allowancesItem = Array.from(document.getElementsByClassName('allowances-element'))
+         for (let i = 0; i < allowancesItem.length; i++){
+            if (allowancesItem[i].id === `allowances-${updatedItem.id}`) {
+               allowancesItem[i].innerHTML = `<tr>
+               <td>${updatedItem.name}</td>
+               <td>${updatedItem.amount}</td>
+               <td class="percentage"></td>
+               <td class="spent">${updatedItem.spent}</td>
+               </tr>`            
+            }
          }
       }
+
       this.updatePercentage(item);
       // update total income, etc.
-      this.totIncome.textContent = item.getData().totalIncome;
-      this.balance.textContent = item.getData().balance;
       this.remainingBudget.textContent = item.getData().remainingToBudget;
 
    }
@@ -200,14 +228,14 @@ class UI {
    removeIncome(item){
       document.querySelector(`#income-${item.currentItem.id}`).remove();
       this.clearFields();
-      this.returnToAddIncome();
+      this.returnToAddState();
       this.totIncome.textContent = item.totalIncome;
       this.balance.textContent = item.balance;
       this.remainingBudget.textContent = item.remainingToBudget;
 
    }
 
-   returnToAddIncome(){
+   returnToAddState(){
       this.addBtn.style.display = 'block';
       this.editBtn.style.display = 'none';
       this.deleteBtn.style.display = 'none';
@@ -219,6 +247,7 @@ class UI {
       // create list item
       const tr = document.createElement('tr');
       tr.id = `allowances-${id}`;
+      tr.className = 'allowances-element'
       tr.innerHTML = `<tr>
       <td>${name}</td>
       <td>${amount}</td>
@@ -236,6 +265,7 @@ class UI {
       // create list item
       const tr = document.createElement('tr');
       tr.id = `expenses-${id}`;
+      tr.className = 'expenses-element'
       tr.innerHTML = `<tr>
       <td>${name}</td>
       <td>${amount}</td>

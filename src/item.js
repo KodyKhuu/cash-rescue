@@ -81,26 +81,20 @@ class Item {
       return newIncomeItem;
    }
 
-   setCurrentTableElement(e){
-      let list = this.getData().incomeItems;
-      let element = e.target.parentElement;
-      if (element.parentElement.classList[0] === 'table-body'){
-         let id = element.id.split('-')[1];
-         if (this.getState() === 'income'){
-            for (let i = 0; i < list.length; i++){
-               if (id == list[i].id){
-                  this.getData().currentItem = list[i];
-                  break; 
-               }
+   setCurrentTableElement(id, list){
+      for (let i = 0; i < list.length; i++){
+         if (id == list[i].id){
+            this.getData().currentItem = list[i];
+            break; 
+            }
          }
-      }
+      
    }
-}
+
 
 
    deleteIncomeItem(e){
       let list = this.getData().incomeItems;
-      this.setCurrentTableElement(e, this.getState(), this.getData());
       for (let i = 0; i < list.length; i++){
          if (list[i].id == this.getData().currentItem.id){
             list.splice(i, 1)
@@ -113,21 +107,26 @@ class Item {
 
    }
 
-   updateIncomeItem(name, amount) {
-      let updatedIncomeItem;
+   updateItem(name, amount, list) {
+      let current = this.getData().currentItem;
+      let updatedItem;
       amount = parseFloat(amount);
-      for (let i = 0; i < this.data.incomeItems.length; i++){
-         if (this.data.incomeItems[i].id == this.data.currentItem.id) {
-            this.data.totalIncome += amount - this.data.currentItem.amount;
-            this.data.balance += amount - this.data.currentItem.amount;
-            this.data.remainingToBudget += amount - this.data.currentItem.amount;  
-            this.data.incomeItems[i].name = name
-            this.data.incomeItems[i].amount = amount
-            updatedIncomeItem = this.data.incomeItems[i];
+      for (let i = 0; i < list.length; i++){
+         if (list[i].id == current.id) {
+            if (this.getState() === 'income'){
+               this.getData().totalIncome += amount - current.amount;
+               this.getData().balance += amount - current.amount;
+               this.getData().remainingToBudget += amount - current.amount;     
+            } else if (this.getState() === 'allowances'){
+               this.getData().remainingToBudget -= amount - current.amount;
+            }
+            list[i].name = name
+            list[i].amount = amount
+            updatedItem = list[i];
             break
          }
       }
-      return updatedIncomeItem;
+      return updatedItem;
    }
 
    addAllowancesItem(name, spent, amount) {

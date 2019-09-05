@@ -7,6 +7,10 @@ class App {
          ui.changeEditState(e, item)
       });
 
+      ui.allowancesTable.addEventListener('click', (e) => {
+         ui.changeEditState(e, item)
+      });
+
       ui.editBtn.addEventListener('click', () => {
          this.incomeUpdateSubmit(item);
       });
@@ -15,7 +19,7 @@ class App {
          this.incomeDeleteItem(e);
       });
       ui.backBtn.addEventListener('click', () => {
-         ui.returnToAddIncome()
+         ui.returnToAddState()
          ui.clearFields();
       });
 
@@ -43,38 +47,40 @@ class App {
 
    incomeUpdateSubmit(item){
       const name = ui.incomeNameInput.value;
-      const selectName = ui.selectInput.value;
       const amount = ui.incomeAmountInput.value;
-      if (item.data.state === 'income') {
+      if (item.getState() === 'income') {
          if (name !== '' && amount !== ''){
-            const incomeItem = item.updateIncomeItem(name,amount);
-            ui.incomeListUpdate(incomeItem.name,incomeItem.amount, incomeItem.id, item);
-            ui.clearFields();
+            const incomeItem = item.updateItem(name,amount,item.getData().incomeItems);
+            ui.tableUpdate(incomeItem, item);
          }
-
-         ui.returnToAddIncome();
-
+      } else if (item.getState() === 'allowances') {
+         if (name !== '' && amount !== ''){
+            const allowancesItem = item.updateItem(name,amount,item.getData().allowancesItems);
+            ui.tableUpdate(allowancesItem, item);
       }
+      ui.clearFields();
+      ui.returnToAddState();
    }
+}
 
    incomeAddSubmit(){
       const name = ui.incomeNameInput.value;
       const selectName = ui.selectInput.value;
       const amount = ui.incomeAmountInput.value;
-      if (item.data.state === 'income') {
+      if (item.getState() === 'income') {
          if (name !== '' && amount !== ''){
             const incomeItem = item.addIncomeItem(name,amount);
             ui.incomeListAdd(incomeItem.name,incomeItem.amount, incomeItem.id, item);
             ui.clearFields();
          }   
-      } else if (item.data.state === 'allowances'){
+      } else if (item.getState() === 'allowances'){
          if (name !== '' && amount !== ''){
             const allowanceItem = item.addAllowancesItem(name,0,amount);
             ui.allowancesListAdd(allowanceItem.name,allowanceItem.amount, allowanceItem.spent, allowanceItem.id, item);
             ui.updateSelectHtml(item.getData().allowancesItems);
             ui.clearFields();   
          }
-      } else if (item.data.state === 'expenses'){
+      } else if (item.getState() === 'expenses'){
          if (selectName !== '' && amount !== ''){
             const name = ui.selectInput.innerText;
             const desc = ui.expensesDescriptionInput.value;
@@ -83,7 +89,6 @@ class App {
             ui.expensesListAdd(expensesItem.name,expensesItem.amount, expensesItem.desc,expensesItem.date, expensesItem.id, item);
             ui.updateAllowances(ui.selectInput.value,item.getData(),expensesItem.amount);
             ui.clearFields();
-            // , 
          }
       }
    }
@@ -97,7 +102,6 @@ class App {
       ui.editBtn.style.display = 'none'
       ui.deleteBtn.style.display = 'none'
       ui.backBtn.style.display = 'none'
-
       ui.changeState(item.getState());
    }
 }
