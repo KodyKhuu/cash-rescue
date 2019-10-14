@@ -1,3 +1,5 @@
+import { ui } from './ui.js'
+
 class Item {
    constructor() {
       this.data = {
@@ -31,11 +33,10 @@ class Item {
       return item
    }
 
-   createAllowancesItem(name, amount, spent, id){
+   createAllowancesItem(name, amount, id){
       const item = {
          name,
          amount,
-         spent,
          id
       }
       return item   
@@ -51,9 +52,7 @@ class Item {
       }
       return item
    }
-   logData() {
-      console.log(this.data);
-   }
+
    getData() {
       return this.data;
    }
@@ -93,21 +92,41 @@ class Item {
 
 
 
-   deleteIncomeItem(e){
-      let list = this.getData().incomeItems;
-      for (let i = 0; i < list.length; i++){
-         if (list[i].id == this.getData().currentItem.id){
-            list.splice(i, 1)
+   delItem(){
+      let items;
+      if (this.getState() === 'income'){
+         items = this.getData().incomeItems;
+         this.getData().totalIncome -= this.getData().currentItem.amount;
+         this.getData().balance -= this.getData().currentItem.amount;
+         this.getData().remainingToBudget -= this.getData().currentItem.amount;
+      }
+      else if (this.getState() === 'allowances'){
+         items = this.getData().allowancesItems;
+         this.getData().remainingToBudget += this.getData().currentItem.amount;
+      }
+      else if (this.getState() === 'expenses'){
+         items = this.getData().expensesItems;
+         this.getData().spent -= this.getData().currentItem.amount;
+         this.getData().balance += this.getData().currentItem.amount;
+         for (let j = 0; j < this.getData().allowancesItems.length; j++){
+            if(this.getData().currentItem.name === this.getData().allowancesItems[j].name){
+               this.getData().allowancesItems[j].spent.splice(j,1)
+               document.querySelector(`#allowances-${j}`).children[3].innerText = item.getData().allowancesItems[j].spent.reduce((a, b) => a + b, 0)
+               break
+            }
+
+         }
+
+      }  
+      for (let i = 0; i < items.length; i++){
+         if (items[i].id == this.getData().currentItem.id){
+            items.splice(i, 1)
             break
          }
       }
-      this.getData().totalIncome -= this.getData().currentItem.amount;
-      this.getData().balance -= this.getData().currentItem.amount;
-      this.getData().remainingToBudget -= this.getData().currentItem.amount;
-
    }
 
-   updateItem(name, amount, list) {
+   updateItem(name, amount, expensesDesc, expensesDate, list) {
       let current = this.getData().currentItem;
       let updatedItem;
       amount = parseFloat(amount);
@@ -119,17 +138,30 @@ class Item {
                this.getData().remainingToBudget += amount - current.amount;     
             } else if (this.getState() === 'allowances'){
                this.getData().remainingToBudget -= amount - current.amount;
+            } else if (this.getState() === 'expenses'){
+               this.getData().spent += amount - current.amount;
+               this.getData().balance -= amount - current.amount;
+               for (let j = 0; j < this.getData().allowancesItems.length; j++){
+                  if(name === this.getData().allowancesItems[j].name){
+                     this.getData().allowancesItems[j].spent.splice(j,1)
+                  }
+               }
+               list[i].desc = expensesDesc
+               list[i].date = expensesDate
+               }
+
             }
             list[i].name = name
             list[i].amount = amount
             updatedItem = list[i];
             break
          }
+         return updatedItem;
       }
-      return updatedItem;
-   }
+      
+   
 
-   addAllowancesItem(name, spent, amount) {
+   addAllowancesItem(name, amount) {
       let ID;
       // create ID
       if(this.data.allowancesItems.length > 0){
@@ -138,7 +170,8 @@ class Item {
          ID = 0
       }
       amount = parseFloat(amount);
-      const newAllowancesItem = this.createAllowancesItem(name,amount,spent,ID);
+      const newAllowancesItem = this.createAllowancesItem(name,amount,ID);
+      newAllowancesItem.spent = []
       this.data.allowancesItems.push(newAllowancesItem);
       this.data.remainingToBudget -= amount;
       return newAllowancesItem;

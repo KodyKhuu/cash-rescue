@@ -11,12 +11,16 @@ class App {
          ui.changeEditState(e, item)
       });
 
+      ui.expensesTable.addEventListener('click', (e) => {
+         ui.changeEditState(e, item)
+      })
+
       ui.editBtn.addEventListener('click', () => {
          this.incomeUpdateSubmit(item);
       });
 
-      ui.deleteBtn.addEventListener('click', (e) => {
-         this.incomeDeleteItem(e);
+      ui.deleteBtn.addEventListener('click', () => {
+         this.deleteItem();
       });
       ui.backBtn.addEventListener('click', () => {
          ui.returnToAddState()
@@ -40,9 +44,9 @@ class App {
       });
    }
 
-   incomeDeleteItem(e){
-      item.deleteIncomeItem(e)
-      ui.removeIncome(item.getData());
+   deleteItem(){
+      item.delItem();
+      ui.removeItem();
    }
 
    incomeUpdateSubmit(item){
@@ -50,18 +54,29 @@ class App {
       const amount = ui.incomeAmountInput.value;
       if (item.getState() === 'income') {
          if (name !== '' && amount !== ''){
-            const incomeItem = item.updateItem(name,amount,item.getData().incomeItems);
+            const incomeItem = item.updateItem(name,amount,null,null,item.getData().incomeItems);
             ui.tableUpdate(incomeItem, item);
          }
       } else if (item.getState() === 'allowances') {
          if (name !== '' && amount !== ''){
-            const allowancesItem = item.updateItem(name,amount,item.getData().allowancesItems);
+            const allowancesItem = item.updateItem(name,amount,null,null,item.getData().allowancesItems);
             ui.tableUpdate(allowancesItem, item);
+         }
+      } else if (item.getState() === 'expenses') {
+         
+         const expensesName = ui.selectInput[ui.selectInput.value].innerText;
+         const desc = ui.expensesDescriptionInput.value;
+         const date = ui.expensesDateInput.value;
+         if (expensesName !== '' && amount !== '') {
+            const expensesItem = item.updateItem(expensesName,amount,desc,date,item.getData().expensesItems)
+            ui.tableUpdate(expensesItem, item)
+            ui.updateAllowances(ui.selectInput.value,item.getData(),expensesItem.amount);
+         }
       }
       ui.clearFields();
       ui.returnToAddState();
    }
-}
+
 
    incomeAddSubmit(){
       const name = ui.incomeNameInput.value;
@@ -75,14 +90,14 @@ class App {
          }   
       } else if (item.getState() === 'allowances'){
          if (name !== '' && amount !== ''){
-            const allowanceItem = item.addAllowancesItem(name,0,amount);
+            const allowanceItem = item.addAllowancesItem(name,amount);
             ui.allowancesListAdd(allowanceItem.name,allowanceItem.amount, allowanceItem.spent, allowanceItem.id, item);
             ui.updateSelectHtml(item.getData().allowancesItems);
             ui.clearFields();   
          }
       } else if (item.getState() === 'expenses'){
          if (selectName !== '' && amount !== ''){
-            const name = ui.selectInput.innerText;
+            const name = ui.selectInput[ui.selectInput.value].innerText;
             const desc = ui.expensesDescriptionInput.value;
             const date = ui.expensesDateInput.value;
             const expensesItem = item.addExpensesItem(name,amount,desc,date);
@@ -94,7 +109,10 @@ class App {
    }
 
    init(){
+      let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
       this.loadEventListeners();
+      let d = new Date();
+      ui.month.innerText = months[d.getMonth()];
       ui.incomeBtn.setAttribute('disabled', '');
       ui.selectFormGroup.style.display = 'none'
       ui.allowancesTable.style.display = 'none'

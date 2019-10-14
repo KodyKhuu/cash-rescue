@@ -1,10 +1,10 @@
-
-
+import { item } from './item.js'
 class UI {
    constructor(){
+      this.month = document.querySelector('.month')
+      this.body = document.querySelector('body');
       this.totIncome = document.querySelector('.total-income');
       this.remainingBudget = document.querySelector('.remaining');
-      this.difference = document.querySelector('.difference');
       this.spent = document.querySelector('.spent');
       this.balance = document.querySelector('.balance');
       this.incomeNameInput = document.querySelector('#name-input');
@@ -47,15 +47,16 @@ class UI {
    updateAllowances(id,item,amount){
       for(let i=0; i < item.allowancesItems.length; i++){
          if (item.allowancesItems[i].id == id){
-            item.allowancesItems[i].spent += amount
-            document.querySelector(`#allowances-${id}`).children[3].innerText = item.allowancesItems[i].spent
+            item.allowancesItems[i].spent.push(amount)
+            document.querySelector(`#allowances-${id}`).children[3].innerText = item.allowancesItems[i].spent.reduce((a, b) => a + b, 0)
             if (item.allowancesItems[i].spent > item.allowancesItems[i].amount) {
                document.querySelector(`#allowances-${id}`).children[3].className = 'text-danger'
             }
             break
          }
       }    
-   }  
+   }
+
    
    updatePercentage(item){
       let list = Array.from(document.getElementsByClassName('percentage'))
@@ -81,6 +82,9 @@ class UI {
          } else if (item.getState() === 'expenses'){
             item.setCurrentTableElement(id, item.getData().expensesItems)
             this.editTitle.textContent = 'Edit Expenses'
+            this.expensesDescriptionInput.value = item.getData().currentItem.desc
+            this.expensesDateInput.value = item.getData().currentItem.date
+            this.selectInput.value = item.getData().currentItem.id
          }
          this.incomeNameInput.value = item.getData().currentItem.name;
          this.incomeAmountInput.value = item.getData().currentItem.amount;
@@ -88,13 +92,13 @@ class UI {
          this.editBtn.style.display = 'block'
          this.deleteBtn.style.display = 'block'
          this.backBtn.style.display = 'block'
-         
       }
    }
 
 
    
    changeState(state){
+      this.returnToAddState()
       if (state === 'income'){
          if (ui.allowancesBtn.getAttributeNames().includes('disabled')){
          ui.allowancesBtn.removeAttribute('disabled');
@@ -159,7 +163,7 @@ class UI {
       ui.amountLabel.textContent = 'Amount Spent';
       ui.descriptionFormGroup.style.display = 'block';
       ui.dateFormGroup.style.display = 'block';
-      ui.listTitle.textContent = 'Transations of Expenses';
+      ui.listTitle.textContent = 'Transactions of Expenses';
       ui.editTitle.textContent = 'Add Expenses';
 
    }
@@ -206,10 +210,10 @@ class UI {
          this.totIncome.textContent = item.getData().totalIncome;
          this.balance.textContent = item.getData().balance;   
       } else if (item.getState() === 'allowances') {
-         let allowancesItem = Array.from(document.getElementsByClassName('allowances-element'))
-         for (let i = 0; i < allowancesItem.length; i++){
-            if (allowancesItem[i].id === `allowances-${updatedItem.id}`) {
-               allowancesItem[i].innerHTML = `<tr>
+         let allowancesItems = Array.from(document.getElementsByClassName('allowances-element'))
+         for (let i = 0; i < allowancesItems.length; i++){
+            if (allowancesItems[i].id === `allowances-${updatedItem.id}`) {
+               allowancesItems[i].innerHTML = `<tr>
                <td>${updatedItem.name}</td>
                <td>${updatedItem.amount}</td>
                <td class="percentage"></td>
@@ -217,6 +221,20 @@ class UI {
                </tr>`            
             }
          }
+      } else if (item.getState() === 'expenses') {
+         let expensesItems = Array.from(document.getElementsByClassName('expenses-element'))
+         for (let i = 0; i < expensesItems.length; i++) {
+            if (expensesItems[i].id === `expenses-${updatedItem.id}`) {
+               expensesItems[i].innerHTML = `<tr>
+               <td>${updatedItem.name}</td>
+               <td>${updatedItem.amount}</td>
+               <td>${updatedItem.desc}</td>
+               <td>${updatedItem.date}</td>
+               </tr>`
+            }
+         }
+         this.spent.textContent = item.getData().spent;
+         this.balance.textContent = item.getData().balance;
       }
 
       this.updatePercentage(item);
@@ -225,13 +243,23 @@ class UI {
 
    }
 
-   removeIncome(item){
-      document.querySelector(`#income-${item.currentItem.id}`).remove();
+   removeItem(){
+      if (item.getState() === 'income'){
+         document.querySelector(`#income-${item.getData().currentItem.id}`).remove();
+      }
+      else if (item.getState() === 'allowances'){
+         document.querySelector(`#allowances-${item.getData().currentItem.id}`).remove();
+      }
+      else if (item.getState() === 'expenses'){
+         document.querySelector(`#expenses-${item.getData().currentItem.id}`).remove();
+      }
       this.clearFields();
       this.returnToAddState();
-      this.totIncome.textContent = item.totalIncome;
-      this.balance.textContent = item.balance;
-      this.remainingBudget.textContent = item.remainingToBudget;
+      this.totIncome.textContent = item.getData().totalIncome;
+      this.balance.textContent = item.getData().balance;
+      this.remainingBudget.textContent = item.getData().remainingToBudget;
+      this.spent.textContent = item.getData().spent
+      this.balance.textContent = item.getData().balance
 
    }
 
@@ -240,7 +268,13 @@ class UI {
       this.editBtn.style.display = 'none';
       this.deleteBtn.style.display = 'none';
       this.backBtn.style.display = 'none';
-      this.editTitle.textContent = 'Add Income';
+      if (item.getState() === 'income'){
+         this.editTitle.textContent = 'Add Income';
+      } else if (item.getState() === 'allowances'){
+         this.editTitle.textContent = 'Add Allowances'
+      } else if (item.getState() === 'expenses'){
+         this.editTitle.textContent = 'Add Expenses'
+      }
    }
 
    allowancesListAdd(name, amount, spent, id, item){
@@ -252,7 +286,7 @@ class UI {
       <td>${name}</td>
       <td>${amount}</td>
       <td class="percentage"></td>
-      <td class="spent">${spent}</td>
+      <td class="spent">${spent.reduce((a, b) => a + b, 0)}</td>
       </tr>`
       this.allowancesList.insertAdjacentElement('beforeend', tr)
       this.updatePercentage(item);
