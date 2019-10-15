@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <title>Cash Rescue</title>
+  </head>
+  <body>
+   <nav class="navbar bg-success mb-4">
+      <a href="#" class="navbar-brand text-white mx-auto">Cash Rescue</a>
+   </nav>
+
+   <div class="container mb-3">
+      <div class="row">
+         <div class="col">
+            <div class="card">
+               <div class="card-title">
+                  <h2 class="card-header text-primary">Income of <span class="month"></span></h2>
+                  <div class="card-body pb-0">
+                     <div class="row mb-3">
+                        <h4 class="col-9 text-muted">Total Income</h4>
+                        <h4 class="col-3">
+                              $<span class="total-income">0</span> 
+                        </h4>
+                     </div>
+                     <div class="row mb-3">
+                        <h4 class="col-9 text-muted">Remaining to budget</h4>
+                        <h4 class="col-3">
+                              $<span class="remaining">0</span> 
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col">
+            <div class="card mb-0">
+               <div class="card-title">
+                  <h2 class="card-header text-danger">Expenses</h2>
+                  <div class="card-body pb-0">
+                     <div class="row mb-3">
+                        <h4 class="difference col-9 text-muted">
+                           Spent so far
+                        </h4>
+                        <h4 class="col-3">
+                           $<span class="spent">0</span> 
+                        </h4>
+                     </div>
+                     <div class="row mb-3">
+                        <h4 class="difference col-9 text-muted">
+                           Remaining Balance
+                        </h4>
+                        <h4 class="col-3">
+                              $<span class="balance">0</span> 
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="container">
+      <div class="row">
+         <h5 class="mx-auto text-muted">Edit:</h5>
+      </div>
+      <div class="row">
+         <button type="button" class="col income-btn btn btn-outline-secondary">Income</button>
+         <button type="button" class="col allowances-btn btn btn-outline-secondary">Allowances</button>
+         <button type="button" class="col expenses-btn btn btn-outline-secondary">Expenses</button>
+      </div>
+   </div>
+
+   <div class="container mt-4 mb-3">
+      <div class="card">
+         <div class="card-body">
+         <h4 class="edit-title card-title pb-2">Edit Income</h4>
+            <form>
+               <div class="row">
+                  <div class="name form-group col-7">
+                     <div class="name-input">
+                        <label for="name-input" class="name-label text-muted">Name</label>
+                        <input type="text" id="name-input" class="form-control">      
+                     </div>
+                     <div class="select-input">
+                        <label for="select-input" class="name-label text-muted">Name</label>
+                        <select id="select-input" class="form-control">
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group col-5">
+                     <label for="amount-input" class="amount-label text-muted">Amount</label>
+                     <input type="number" step="0.01" id="amount-input" class="form-control">
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="desc form-group col-9">
+                     <label for="desc-input" class="text-muted">Description</label>
+                     <input type="text" id="description-input" class="form-control">
+                  </div>
+                  <div class="date form-group col-3">
+                     <label for="date-input" class="text-muted">Date</label>
+                     <input type="date" id="date-input" class="form-control">
+                  </div>
+               </div>
+               <div class="row">
+                  <button type="button" class=" add-btn btn btn-outline-primary mx-auto"><i class="fa fa-plus"></i> Add</button>
+                  <button type="button" class=" edit-btn btn btn-outline-primary"><i class="fa fa-pencil-square-o"></i> Edit</button>
+                  <button type="button" class=" delete-btn btn btn-outline-primary"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                  <button type="button" class=" back-btn btn btn-outline-primary"><i class=" 	fa fa-angle-double-left"></i> Back</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+   
+   <div class="container">
+      <h5 class="list-title mt-3">Sources of Income</h5>
+      <table class="income-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+            </tr>
+         </thead>
+         <tbody class="table-body income-list">
+         </tbody>
+      </table>
+
+      <table class="allowances-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+               <th scope="col">% of Income</th>
+               <th scope="col">Spent</th>
+            </tr>
+         </thead>
+         <tbody class="table-body allowances-list">
+         </tbody>
+      </table>
+
+      <table class="expenses-table table table-hover">
+         <thead>
+            <tr>
+               <th scope="col">Name</th>
+               <th scope="col">Amount</th>
+               <th scope="col">Description</th>
+               <th scope="col">Date</th>
+            </tr>
+         </thead>
+         <tbody class="table-body expenses-list">
+         </tbody>
+      </table>
+
+      <ul class="expenses-list list-group">
+      </ul>
+         
+   </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
