@@ -1,0 +1,24 @@
+{
+  "name": "cashRescue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KodyKhuu/cash-rescue.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://kodykhuu.github.io/cash-rescue",
+  "bugs": {
+    "url": "https://github.com/KodyKhuu/cash-rescue/issues"
+  },
+  "homepage": "https://github.com/KodyKhuu/cash-rescue#readme",
+  "dependencies": {
+    "gh-pages": "^2.1.1"
+  }
+}
